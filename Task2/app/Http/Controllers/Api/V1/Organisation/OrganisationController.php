@@ -21,10 +21,13 @@ class OrganisationController extends Controller
 
         $organisations = $user->organisations;
 
-        // dd($user->organisations);
-        // $organisationsBelongsTo = $user->userOrganisations;
-        // $all = array_merge($organisations, $organisationsBelongsTo);
-        // dd($all);
+        $organisationsBelongsTo = $user->userOrganisations;
+
+        foreach ($organisationsBelongsTo as $organisationBelongsTo) {
+            $org = Organisation::where('id', $organisationBelongsTo->orgId)->get();
+        }
+        $all = array_merge($org, $organisations);
+        dd($all);
 
         if ($organisations) {
             $data = OrganisationResource::collection($organisations);
@@ -51,6 +54,8 @@ class OrganisationController extends Controller
     {
         $request->validated();
         $user = auth()->user();
+
+        dd($user);
 
         //create an organisation that belogs to the user making request
         $organisation = $user->organisations()->create($request->all());
