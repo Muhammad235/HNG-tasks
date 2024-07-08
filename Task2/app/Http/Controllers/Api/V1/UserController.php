@@ -30,7 +30,7 @@ $userOrg = Organisation::find($authUser->orgId);
                     "user" => new UserResource($user),
                 ],
             ], 400);
-        }elseif($userOrd){
+        }elseif($userOrg){
 
         return response()->json([
             "status" => "success",
