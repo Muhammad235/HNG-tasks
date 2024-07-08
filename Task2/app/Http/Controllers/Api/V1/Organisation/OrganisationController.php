@@ -75,7 +75,7 @@ class OrganisationController extends Controller
                 "status" => "success",
                 "message" => "Request successful",
                 "data" => [
-                    "organizations" => $data
+                    "organisations" => $data
                 ],
             ], 200);
         } else {
