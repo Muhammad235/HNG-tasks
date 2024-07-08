@@ -19,7 +19,7 @@ Route::middleware('auth:api')->group(function() {
     Route::get('users/{user}', [UserController::class, 'show']);
 
     Route::post('organisations', [OrganisationController::class, 'store']);
-    Route::post('organisations/{orgId}', [OrganisationController::class, 'addUser']);
+    Route::post('organisations/{orgId}/users', [OrganisationController::class, 'addUser']);
     Route::get('organisations', [OrganisationController::class, 'index']);
     Route::get('organisations/{organisation}', [OrganisationController::class, 'show']);
 });
