@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Models\User;
+use App\Models\OrganisationUser;
+use App\Models\Organisation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
@@ -16,30 +18,30 @@ class UserController extends Controller
     public function show(User $user)
     {
         $authUser = auth()->user();
+        
+        if ($authUser->id !== $user->id){
+        
+        
+        $checkIfbelongsToOrg = OrganisationUser::where('orgId', $authUser->orgId)->where('userId', $user->id)->exists();
+        $userOrg = Organisation::find($authUser->orgId); 
 
-$checkIfbelongsToOrg = OrganisationUser::where('orgId', $authUser->orgId)->where('userId', $user->id)->exists();
-
-$userOrg = Organisation::find($authUser->orgId); 
-
-        if(!checkIfbelongsToOrg){
+        if(!$checkIfbelongsToOrg){
 
             return response()->json([
                 "status" => "Bad Request",
-                "message" => "Access denied, you can only access users that belongs to your organisation",
-                "data" => [
-                    "user" => new UserResource($user),
-                ],
+                "message" => "Access denied, user does not belong to your org",
+               
             ], 400);
-        }elseif($userOrg){
+        }
+        
+        }
 
         return response()->json([
             "status" => "success",
             "message" => "Request successful",
-            "data" => [
-                "user" => new UserResource($user),
-            ],
+            "data" =>new UserResource($user)
+           
         ], 200);
     }
 
-}
 }
