@@ -19,6 +19,8 @@ class UserController extends Controller
 
 $checkIfbelongsToOrg = OrganisationUser::where('orgId', $authUser->orgId)->where('userId', $user->id)->exists();
 
+$userOrg = Organisation::find($authUser->orgId); 
+
         if(!checkIfbelongsToOrg){
 
             return response()->json([
@@ -28,7 +30,7 @@ $checkIfbelongsToOrg = OrganisationUser::where('orgId', $authUser->orgId)->where
                     "user" => new UserResource($user),
                 ],
             ], 400);
-        }
+        }elseif($userOrd){
 
         return response()->json([
             "status" => "success",
@@ -39,4 +41,5 @@ $checkIfbelongsToOrg = OrganisationUser::where('orgId', $authUser->orgId)->where
         ], 200);
     }
 
+}
 }
