@@ -23,7 +23,7 @@ $checkIfbelongsToOrg = OrganisationUser::where('orgId', $authUser->orgId)->where
 
             return response()->json([
                 "status" => "Bad Request",
-                "message" => "Access denied, you can only get personal details",
+                "message" => "Access denied, you can only access users that belongs to your organisation",
                 "data" => [
                     "user" => new UserResource($user),
                 ],
