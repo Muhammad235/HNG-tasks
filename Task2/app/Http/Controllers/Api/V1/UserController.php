@@ -17,7 +17,9 @@ class UserController extends Controller
     {
         $authUser = auth()->user();
 
-        if($authUser->id !== auth()->id()){
+$checkIfbelongsToOrg = OrganisationUser::where('orgId', $authUser->orgId)->where('userId', $user->id)->exists();
+
+        if(!checkIfbelongsToOrg){
 
             return response()->json([
                 "status" => "Bad Request",
