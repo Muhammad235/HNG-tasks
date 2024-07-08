@@ -22,11 +22,22 @@ class OrganisationController extends Controller
         $organisations = $user->organisations;
 
         $organisationsBelongsTo = $user->userOrganisations;
+        // Initialize an array to hold the organisations
+        $orgs = [];
 
+        // Loop through each organisation the user belongs to
         foreach ($organisationsBelongsTo as $organisationBelongsTo) {
-            $org = Organisation::where('id', $organisationBelongsTo->orgId)->get();
+            // Find the organisation by ID and add it to the array
+            $org = Organisation::where('id', $organisationBelongsTo->orgId)->first();
+            if ($org) {
+                $orgs[] = $org;
+            }
         }
-        $all = array_merge($org, $organisations);
+
+        // Merge the organisations the user belongs to with the organisations they are associated with
+        $all = array_merge($orgs, $user->organisations->toArray());
+
+        // Dump and die to check the result
         dd($all);
 
         if ($organisations) {
