@@ -23,3 +23,7 @@ Route::middleware('auth:api')->group(function() {
     Route::get('organisations/{organisation}', [OrganisationController::class, 'show']);
 });
 
+Route::get('test', function(){
+
+    $token ='';
+});

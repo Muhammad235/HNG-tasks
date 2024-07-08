@@ -6,9 +6,27 @@ use Tests\TestCase;
 
 uses(TestCase::class, RefreshDatabase::class);
 
+
+//Unit Test Cases
+
+it('Ensure Token is generated', function(){
+    $user = [
+        "firstName" => "John",
+        "lastName" => "Doe",
+        "email" => "John@gamil.com",
+        "password" => Hash::make('password'),
+    ];
+
+    $response = $this->postJson('/api/auth/register', $user);
+    $response->assertStatus(201);
+
+    expect($response['data']['accessToken'])->not()->toBeEmpty();
+});
+
+
 //End-to-End Test
 
-it('Should Register User Successfully and Verify the organisation name', function(){
+it('Should Register User Successfully with default organisation', function(){
     $user = [
         "firstName" => "John",
         "lastName" => "Doe",
@@ -24,10 +42,10 @@ it('Should Register User Successfully and Verify the organisation name', functio
     $this->assertDatabaseHas('users', [
         'email' => $user['email']
     ]);
-
     $this->assertDatabaseHas('organisations', [
-        'name' => $organisationName,
+        'name' => $organisationName
     ]);
+
 });
 
 it('Should fail if the firstName field is missing when registering', function(){
@@ -39,6 +57,7 @@ it('Should fail if the firstName field is missing when registering', function(){
     ];
     $response = $this->postJson('/api/auth/register', $user);
     $response->assertStatus(422);
+    $response->assertSee("The first name field is required.");
 });
 
 it('Should fail if the lastName field is missing when registering', function(){
@@ -50,6 +69,7 @@ it('Should fail if the lastName field is missing when registering', function(){
     ];
     $response = $this->postJson('/api/auth/register', $user);
     $response->assertStatus(422);
+    $response->assertSee("The last name field is required.");
 });
 
 
@@ -61,7 +81,8 @@ it('Should fail if the email field is missing when registering', function(){
         "password" => Hash::make('password'),
     ];
     $response = $this->postJson('/api/auth/register', $user);
-    $response->assertStatus(422);
+    $response->assertStatus(422);#
+    $response->assertSee("The email field is required.");
 });
 
 it('Should fail if the password field is missing when registering', function(){
@@ -73,8 +94,8 @@ it('Should fail if the password field is missing when registering', function(){
     ];
     $response = $this->postJson('/api/auth/register', $user);
     $response->assertStatus(422);
+    $response->assertSee("The password field is required.");
 });
-
 
 
 it("Should fail if there's duplicate email", function(){
