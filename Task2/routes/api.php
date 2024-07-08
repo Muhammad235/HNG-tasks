@@ -1,5 +1,6 @@
 <?php
 
+use Tymon\JWTAuth\JWTAuth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\UserController;
@@ -25,5 +26,7 @@ Route::middleware('auth:api')->group(function() {
 
 Route::get('test', function(){
 
-    $token ='';
+    $token ='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2F1dGgvbG9naW4iLCJpYXQiOjE3MjA0MTc2NjksImV4cCI6MTcyMDQyMTI2OSwibmJmIjoxNzIwNDE3NjY5LCJqdGkiOiJqYUlhRkgySnoxMFBWQkJ0Iiwic3ViIjoiOWM3ODk3Y2EtYzMwMy00Y2UyLWJkNDYtNDU4M2QxYjNjN2Y4IiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.NLR0WZPxO0XZ-FIW2pQ8zt6KgQyBi7_I4JV1juV2-2w';
+
+    $claims = JWTAuth::setToken($token)->getPayload();
 });

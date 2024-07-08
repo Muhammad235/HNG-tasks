@@ -24,6 +24,7 @@ it('Ensure Token is generated', function(){
 });
 
 
+
 //End-to-End Test
 
 it('Should Register User Successfully with default organisation', function(){
@@ -98,21 +99,6 @@ it('Should fail if the password field is missing when registering', function(){
 });
 
 
-it("Should fail if there's duplicate email", function(){
-    $user = [
-        "firstName" => "John",
-        "lastName" => "Doe",
-        "email" => "John@gamil.com",
-        "password" => Hash::make('password'),
-    ];
-
-    $response1 = $this->postJson('/api/auth/register', $user);
-    $response1->assertStatus(201);
-
-    $response2 = $this->postJson('/api/auth/register', $user);
-    $response2->assertStatus(422);
-});
-
 it('Should log the user in successfully', function(){
     $user = [
         "firstName" => "John",
@@ -130,4 +116,21 @@ it('Should log the user in successfully', function(){
     $response = $this->postJson('/api/auth/login', $user);
     $response->assertStatus(200);
 });
+
+it("Should fail if there's duplicate email", function(){
+    $user = [
+        "firstName" => "John",
+        "lastName" => "Doe",
+        "email" => "John@gamil.com",
+        "password" => Hash::make('password'),
+    ];
+
+    $response1 = $this->postJson('/api/auth/register', $user);
+    $response1->assertStatus(201);
+
+    $response2 = $this->postJson('/api/auth/register', $user);
+    $response2->assertStatus(422);
+});
+
+
 
