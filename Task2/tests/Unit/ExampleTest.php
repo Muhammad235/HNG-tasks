@@ -113,12 +113,21 @@ it("Should fail if there's duplicate email", function(){
     $response2->assertStatus(422);
 });
 
-// it('Should log the user in successfully', function(){
-//     $user = [
-//         "email" => "John@gamil.com",
-//         "password" => 'password',
-//     ];
-//     $response = $this->postJson('/api/auth/login', $user);
-//     $response->assertStatus(200);
-// });
+it('Should log the user in successfully', function(){
+    $user = [
+        "firstName" => "John",
+        "lastName" => "Doe",
+        "email" => "John@gamil.com",
+        "password" => Hash::make('password'),
+    ];
+
+    $response = $this->postJson('/api/auth/register', $user);
+
+    $user = [
+        "email" => "John@gamil.com",
+        "password" => 'password',
+    ];
+    $response = $this->postJson('/api/auth/login', $user);
+    $response->assertStatus(200);
+});
 
