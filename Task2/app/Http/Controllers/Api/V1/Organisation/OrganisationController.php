@@ -15,32 +15,61 @@ class OrganisationController extends Controller
     /**
      * Display a listing of the resource.
      */
+    // public function index()
+    // {
+    //     $user = auth()->user();
+
+    //     $organisationsBelongsTo = $user->userOrganisations;
+        
+    //     $orgs = [];
+
+    //     // Loop through each organisation the user belongs to
+    //     foreach ($organisationsBelongsTo as $organisationBelongsTo) {
+    //         $org = Organisation::where('id', $organisationBelongsTo->orgId)->first();
+    //         if ($org) {
+    //             $orgs[] = $org;
+    //         }
+    //     }
+
+    //     // Merge the organisations the user belongs to with the organisations they are associated with
+    //     $organisations = array_merge($orgs, $user->organisations->toArray());
+
+
+    //     if ($organisations) {
+    //         $data = OrganisationResource::collection($organisations);
+    //         return response()->json([
+    //             "status" => "success",
+    //             "message" => "Request successful",
+    //             "data" => [
+    //                 "organizations" => $data
+    //             ],
+    //         ], 200);
+    //     }else {
+    //         return response()->json([
+    //             "status" => "error",
+    //             "message" => "Server error, try again",
+    //             "statusCode" => 500,
+    //         ], 500);
+    //     }
+    // }
+
     public function index()
     {
         $user = auth()->user();
-
-        $organisations = $user->organisations;
-
-        $organisationsBelongsTo = $user->userOrganisations;
-        // Initialize an array to hold the organisations
-        $orgs = [];
-
-        // Loop through each organisation the user belongs to
-        foreach ($organisationsBelongsTo as $organisationBelongsTo) {
-            // Find the organisation by ID and add it to the array
-            $org = Organisation::where('id', $organisationBelongsTo->orgId)->first();
-            if ($org) {
-                $orgs[] = $org;
-            }
-        }
-
-        // Merge the organisations the user belongs to with the organisations they are associated with
-        $all = array_merge($orgs, $user->organisations->toArray());
-
-        // Dump and die to check the result
-        dd($all);
-
-        if ($organisations) {
+    
+        // Get organisations the user belongs to
+        $organisationsBelongsTo = $user->userOrganisations->pluck('orgId');
+    
+        // Get organisations the user belongs to
+        $orgs = Organisation::whereIn('id', $organisationsBelongsTo)->get();
+    
+        // Get organisations the user is associated with
+        $userOrganisations = $user->organisations;
+    
+        // Merge the organisations
+        $organisations = $orgs->merge($userOrganisations);
+    
+        if ($organisations->isNotEmpty()) {
             $data = OrganisationResource::collection($organisations);
             return response()->json([
                 "status" => "success",
@@ -49,7 +78,7 @@ class OrganisationController extends Controller
                     "organizations" => $data
                 ],
             ], 200);
-        }else {
+        } else {
             return response()->json([
                 "status" => "error",
                 "message" => "Server error, try again",
@@ -57,6 +86,7 @@ class OrganisationController extends Controller
             ], 500);
         }
     }
+    
 
     /**
      * Store a newly created resource in storage.
@@ -65,8 +95,6 @@ class OrganisationController extends Controller
     {
         $request->validated();
         $user = auth()->user();
-
-        dd($user);
 
         //create an organisation that belogs to the user making request
         $organisation = $user->organisations()->create($request->all());
